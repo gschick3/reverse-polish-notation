@@ -15,7 +15,7 @@ private:
 
 
 public:
-	Calculator(int windowHeight);
+	Calculator();
 	bool input(std::string in);
 	void printScreen();
 };

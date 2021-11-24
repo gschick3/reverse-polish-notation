@@ -1,8 +1,8 @@
 #include "Calculator.h"
 #include <iostream>
 
-Calculator::Calculator(int windowHeight) {
-	this->windowHeight = windowHeight;
+Calculator::Calculator() {
+	windowHeight = 3;
 	last = 0;
 }
 
@@ -89,6 +89,15 @@ bool Calculator::input(std::string in) {
 				last = log(last) / log(M_E);
 		}
 		break;
+	
+	case 'w':
+		if (in.length() == 1)
+			windowHeight = 3; // reset to default
+		else if (in.at(1) == '+' && windowHeight < 8)
+			windowHeight++;
+		else if (in.at(1) == '-' && windowHeight > 1)
+			windowHeight--;
+		break;
 
 	case 'q':
 	case 'x':
@@ -110,7 +119,7 @@ bool Calculator::input(std::string in) {
 			double din = std::stod(in); // throws exception if in is anything other than number
 			if ((int)stack.size() > 0 || last != 0)
 				stack.push_back(last);
-			last = std::stod(in);
+			last = din;
 		}
 		catch (std::invalid_argument& ia) {
 			std::cout << ia.what() << std::endl;
