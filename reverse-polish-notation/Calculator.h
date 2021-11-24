@@ -18,5 +18,6 @@ public:
 	Calculator();
 	bool input(std::string in);
 	void printScreen();
+	void printHelp();
 };
 

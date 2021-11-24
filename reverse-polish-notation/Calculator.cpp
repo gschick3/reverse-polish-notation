@@ -43,13 +43,6 @@ bool Calculator::input(std::string in) {
 		}
 		break;
 
-	case '<':
-		if ((int)stack.size() > 0) {
-			last = stack.back();
-			stack.pop_back();
-		}
-		else last = 0;
-		break;
 
 	case '!':
 		last = factorial(last);
@@ -59,19 +52,6 @@ bool Calculator::input(std::string in) {
 		last *= 100;
 		break;
 
-	case 'p':
-		if (in == "pi") {
-			if ((int)stack.size() > 0 || last != 0)
-				stack.push_back(last);
-			last = M_PI;
-		}
-		break;
-
-	case 'e':
-		if ((int)stack.size() > 0 || last != 0)
-			stack.push_back(last);
-		last = M_E;
-		break;
 
 	case 'l':
 		if (in == "logb") {
@@ -89,6 +69,28 @@ bool Calculator::input(std::string in) {
 				last = log(last) / log(M_E);
 		}
 		break;
+
+	case 'p':
+		if (in == "pi") {
+			if ((int)stack.size() > 0 || last != 0)
+				stack.push_back(last);
+			last = M_PI;
+		}
+		break;
+
+	case 'e':
+		if ((int)stack.size() > 0 || last != 0)
+			stack.push_back(last);
+		last = M_E;
+		break;
+
+	case '<':
+		if ((int)stack.size() > 0) {
+			last = stack.back();
+			stack.pop_back();
+		}
+		else last = 0;
+		break;
 	
 	case 'w':
 		if (in.length() == 1)
@@ -97,6 +99,10 @@ bool Calculator::input(std::string in) {
 			windowHeight++;
 		else if (in.at(1) == '-' && windowHeight > 1)
 			windowHeight--;
+		break;
+
+	case '?':
+		printHelp();
 		break;
 
 	case 'q':
@@ -129,32 +135,69 @@ bool Calculator::input(std::string in) {
 	return true;
 }
 
-void Calculator::printScreen() {
-	if (last == 0) last = 0; // prevent negative 0 display
-	system("CLS");
-	std::cout << "--------------" << std::endl;
-
-	for (int i = 0; i < (windowHeight >= stack.size() ? windowHeight - stack.size() : 0); i++)
-		std::cout << '|' << std::endl;
-	for (int i = (int)stack.size() >= windowHeight ? stack.size() - windowHeight : 0; i < (int)stack.size(); i++) {
-		std::cout << "| ";
-		if (stack.at(i) == M_PI) std::cout << "pi" << std::endl;
-		else if (stack.at(i) == M_E) std::cout << "e" << std::endl;
-		else std::cout << stack.at(i) << std::endl;
-	}
-
-	std::cout << "|-------------\n| ";
-	if (last == M_PI) std::cout << "pi" << std::endl;
-	else if (last == M_E) std::cout << "e" << std::endl;
-	else std::cout << last << std::endl;
-	std::cout << "--------------" << std::endl;
-
-	std::cout << "> ";
-}
-
 int Calculator::factorial(int n) {
 	int product = 1;
 	for (n; n > 1; n--)
 		product *= n;
 	return product;
+}
+
+void Calculator::printScreen() {
+	if (last == 0) last = 0; // prevent negative 0 display
+	system("CLS");
+	std::cout << "? for help\n";
+	std::cout << "--------------\n";
+
+	for (int i = 0; i < (windowHeight >= stack.size() ? windowHeight - stack.size() : 0); i++)
+		std::cout << '|' << std::endl;
+	for (int i = (int)stack.size() >= windowHeight ? stack.size() - windowHeight : 0; i < (int)stack.size(); i++) {
+		std::cout << "| ";
+		if (stack.at(i) == M_PI) std::cout << "pi\n";
+		else if (stack.at(i) == M_E) std::cout << "e\n";
+		else std::cout << stack.at(i) << std::endl;
+	}
+
+	std::cout << "|-------------\n| ";
+	if (last == M_PI) std::cout << "pi\n";
+	else if (last == M_E) std::cout << "e\n";
+	else std::cout << last << std::endl;
+	std::cout << "--------------\n";
+
+	std::cout << "> ";
+}
+
+void Calculator::printHelp() {
+	system("CLS");
+	std::cout << "Input one number or command at a time\n";
+	std::cout << "Commands:\n\n";
+
+	std::cout << "+\t- Add\n";
+	std::cout << "-\t- Subtract\n";
+	std::cout << "*\t- Multiply\n";
+	std::cout << "/\t- Divide\n\n";
+
+	std::cout << "^\t- Exponent\n";
+	std::cout << "_\t- Root\n";
+	std::cout << "log\t- Log base 10\n";
+	std::cout << "ln\t- Log base e\n";
+	std::cout << "logb\t- Log base b\n\n";
+
+	std::cout << "!\t- Factorial\n";
+	std::cout << "%\t- Percent\n\n";
+
+	std::cout << "e\t- E\n";
+	std::cout << "pi\t- PI\n\n";
+
+	std::cout << "<\t- Backspace\n\n";
+
+	std::cout << "w+\t- Increase window height\n";
+	std::cout << "w-\t- Decrease window height\n";
+	std::cout << "w\t- Reset window height to default (3)\n\n";
+
+	std::cout << "x or q\t- Exit\n\n";
+
+	char c = '\0';
+	std::cout << "Type 'x' to exit help... ";
+	while (tolower(c) != 'x')
+		std::cin >> c;
 }
