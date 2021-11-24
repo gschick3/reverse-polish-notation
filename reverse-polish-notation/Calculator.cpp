@@ -106,9 +106,15 @@ bool Calculator::input(std::string in) {
 		}
 
 	default:
-		if ((int)stack.size() > 0 || last != 0)
-			stack.push_back(last);
-		last = std::stod(in);
+		try {
+			double din = std::stod(in); // throws exception if in is anything other than number
+			if ((int)stack.size() > 0 || last != 0)
+				stack.push_back(last);
+			last = std::stod(in);
+		}
+		catch (std::invalid_argument& ia) {
+			std::cout << ia.what() << std::endl;
+		}
 		break;
 	}
 	return true;
