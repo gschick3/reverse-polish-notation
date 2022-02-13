@@ -8,6 +8,7 @@ Calculator::Calculator() {
 
 bool Calculator::input(std::string in) {
 	switch (in.at(0)) {
+	// Addition
 	case '+':
 		if ((int)stack.size() > 0) {
 			last += stack.back();
@@ -15,6 +16,7 @@ bool Calculator::input(std::string in) {
 		}
 		break;
 
+	// Multiplication
 	case '*':
 		if ((int)stack.size() > 0) {
 			last *= stack.back();
@@ -22,6 +24,7 @@ bool Calculator::input(std::string in) {
 		}
 		break;
 
+	// Division
 	case '/':
 		if ((int)stack.size() > 0) {
 			last = stack.back() / last;
@@ -29,6 +32,7 @@ bool Calculator::input(std::string in) {
 		}
 		break;
 
+	// Exponent
 	case '^':
 		if ((int)stack.size() > 0) {
 			last = pow(stack.back(), last);
@@ -36,6 +40,7 @@ bool Calculator::input(std::string in) {
 		}
 		break;
 
+	// Nth root
 	case '_':
 		if ((int)stack.size() > 0) {
 			last = pow(stack.back(), (1 / last));
@@ -43,16 +48,17 @@ bool Calculator::input(std::string in) {
 		}
 		break;
 
-
+	// Factorial
 	case '!':
 		last = factorial(last);
 		break;
 
+	// Percent
 	case '%':
 		last *= 100;
 		break;
 
-
+	// Logs
 	case 'l':
 		if (in == "logb") {
 			if ((int)stack.size() > 0) {
@@ -70,6 +76,7 @@ bool Calculator::input(std::string in) {
 		}
 		break;
 
+	// Pi
 	case 'p':
 		if (in == "pi") {
 			if ((int)stack.size() > 0 || last != 0)
@@ -78,12 +85,14 @@ bool Calculator::input(std::string in) {
 		}
 		break;
 
+	// Euler's Number
 	case 'e':
 		if ((int)stack.size() > 0 || last != 0)
 			stack.push_back(last);
 		last = M_E;
 		break;
 
+	// Delete last input
 	case '<':
 		if ((int)stack.size() > 0) {
 			last = stack.back();
@@ -92,9 +101,10 @@ bool Calculator::input(std::string in) {
 		else last = 0;
 		break;
 	
+	// Set window height
 	case 'w':
 		if (in.length() == 1)
-			windowHeight = 3; // reset to default
+			windowHeight = 3;																							// reset to default
 		else if (in.at(1) == '+' && windowHeight < 8)
 			windowHeight++;
 		else if (in.at(1) == '-' && windowHeight > 1)
@@ -108,9 +118,9 @@ bool Calculator::input(std::string in) {
 	case 'q':
 	case 'x':
 		return false;
-
-	// place this case here so it can fall through to the default case
-	case '-':
+	
+	// Subtraction
+	case '-':																											// fall through if input is a negative number
 		if (in.size() == 1) {
 			if ((int)stack.size() > 0) {
 				last = stack.back() - last;
@@ -122,7 +132,7 @@ bool Calculator::input(std::string in) {
 
 	default:
 		try {
-			double din = std::stod(in); // throws exception if in is anything other than number
+			double din = std::stod(in);																					// throws exception if in is anything other than number
 			if ((int)stack.size() > 0 || last != 0)
 				stack.push_back(last);
 			last = din;
@@ -143,14 +153,14 @@ int Calculator::factorial(int n) {
 }
 
 void Calculator::printScreen() {
-	if (last == 0) last = 0; // prevent negative 0 display
+	if (last == 0) last = 0;																							// prevent negative 0 display
 	system("CLS");
 	std::cout << "? for help\n";
 	std::cout << "--------------\n";
 
-	for (int i = 0; i < (windowHeight >= stack.size() ? windowHeight - stack.size() : 0); i++)
+	for (int i = 0; i < (windowHeight >= stack.size() ? windowHeight - stack.size() : 0); i++)							// Print edge of display before numbers
 		std::cout << '|' << std::endl;
-	for (int i = (int)stack.size() >= windowHeight ? stack.size() - windowHeight : 0; i < (int)stack.size(); i++) {
+	for (int i = (int)stack.size() >= windowHeight ? stack.size() - windowHeight : 0; i < (int)stack.size(); i++) {		// Print edge of display with numbers
 		std::cout << "| ";
 		if (stack.at(i) == M_PI) std::cout << "pi\n";
 		else if (stack.at(i) == M_E) std::cout << "e\n";
