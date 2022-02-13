@@ -10,7 +10,8 @@ class Calculator
 private:
 	int factorial(int);
 
-	int windowHeight;
+	int resetWindowHeight;
+	int currWindowHeight;
 	std::vector<double> stack;
 	double last;
 

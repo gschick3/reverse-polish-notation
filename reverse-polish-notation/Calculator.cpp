@@ -4,11 +4,13 @@
 using namespace std;
 
 Calculator::Calculator() {
-	windowHeight = 3;
+	currWindowHeight = 3;
+	resetWindowHeight = 3;
 	last = 0;
 }
 Calculator::Calculator(int windowHeight) {
-	this->windowHeight = windowHeight;
+	currWindowHeight = windowHeight;
+	resetWindowHeight = windowHeight;
 	last = 0;
 }
 
@@ -110,11 +112,11 @@ bool Calculator::input(string in) {
 	// Set window height
 	case 'w':
 		if (in.length() == 1)
-			windowHeight = 3;												// reset to default
-		else if (in.at(1) == '+' && windowHeight < 8)
-			windowHeight++;
-		else if (in.at(1) == '-' && windowHeight > 1)
-			windowHeight--;
+			currWindowHeight = resetWindowHeight;												// reset to default
+		else if (in.at(1) == '+' && currWindowHeight < 8)
+			currWindowHeight++;
+		else if (in.at(1) == '-' && currWindowHeight > 1)
+			currWindowHeight--;
 		break;
 
 	case '?':
@@ -164,10 +166,10 @@ void Calculator::printScreen() {
 	cout << "? for help\n";
 	cout << "--------------\n";
 
-	for (int i = 0; i < (windowHeight >= stack.size() ? windowHeight - stack.size() : 0); i++)
+	for (int i = 0; i < (currWindowHeight >= stack.size() ? currWindowHeight - stack.size() : 0); i++)
 		cout << '|' << endl;												// Print edge of display before numbers
 
-	for (int i = static_cast<int>(stack.size()) >= windowHeight ? stack.size() - windowHeight : 0; i < static_cast<int>(stack.size()); i++) {
+	for (int i = static_cast<int>(stack.size()) >= currWindowHeight ? stack.size() - currWindowHeight : 0; i < static_cast<int>(stack.size()); i++) {
 		cout << "| ";														// Print edge of display with numbers
 		if (stack.at(i) == M_PI) cout << "pi\n";
 		else if (stack.at(i) == M_E) cout << "e\n";
