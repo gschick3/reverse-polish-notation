@@ -5,7 +5,7 @@ constexpr int WINDOW_HEIGHT = 3;
 
 int main()
 {
-	Calculator calc;
+	Calculator calc(WINDOW_HEIGHT);
 	std::string in;
 	bool run = true;
 
