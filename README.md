@@ -1,2 +1,2 @@
 # reverse-polish-notation
-A simple Reverse Polish Notation calculator run on the command line.
+A simple RPN command line application implementing a stack.
