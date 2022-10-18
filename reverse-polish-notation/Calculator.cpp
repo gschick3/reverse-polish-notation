@@ -6,12 +6,12 @@ using namespace std;
 Calculator::Calculator() {
 	currWindowHeight = 3;
 	resetWindowHeight = 3;
-	last = 0;
+	lastInput = 0;
 }
 Calculator::Calculator(int windowHeight) {
 	currWindowHeight = windowHeight;
 	resetWindowHeight = windowHeight;
-	last = 0;
+	lastInput = 0;
 }
 
 bool Calculator::input(string in) {
@@ -19,7 +19,7 @@ bool Calculator::input(string in) {
 	// Addition
 	case '+':
 		if (static_cast<int>(stack.size()) > 0) {
-			last += stack.back();
+			lastInput += stack.back();
 			stack.pop_back();
 		}
 		break;
@@ -27,7 +27,7 @@ bool Calculator::input(string in) {
 	// Multiplication
 	case '*':
 		if (static_cast<int>(stack.size()) > 0) {
-			last *= stack.back();
+			lastInput *= stack.back();
 			stack.pop_back();
 		}
 		break;
@@ -35,7 +35,7 @@ bool Calculator::input(string in) {
 	// Division
 	case '/':
 		if (static_cast<int>(stack.size()) > 0) {
-			last = stack.back() / last;
+			lastInput = stack.back() / lastInput;
 			stack.pop_back();
 		}
 		break;
@@ -43,7 +43,7 @@ bool Calculator::input(string in) {
 	// Exponent
 	case '^':
 		if (static_cast<int>(stack.size()) > 0) {
-			last = pow(stack.back(), last);
+			lastInput = pow(stack.back(), lastInput);
 			stack.pop_back();
 		}
 		break;
@@ -51,68 +51,68 @@ bool Calculator::input(string in) {
 	// Nth root
 	case '_':
 		if (static_cast<int>(stack.size()) > 0) {
-			last = pow(stack.back(), (1 / last));
+			lastInput = pow(stack.back(), (1 / lastInput));
 			stack.pop_back();
 		}
 		break;
 
 	// Factorial
 	case '!':
-		last = factorial(last);
+		lastInput = factorial(lastInput);
 		break;
 
 	// Percent
 	case '%':
-		last *= 100;
+		lastInput *= 100;
 		break;
 
 	// Logs
 	case 'l':
 		if (in == "logb") {
 			if (static_cast<int>(stack.size()) > 0) {
-				last = log(stack.back()) / log(last);
+				lastInput = log(stack.back()) / log(lastInput);
 				stack.pop_back();
 			}
 		}
 		else if (in == "log") {
-			if (last > 0)
-				last = log(last);
+			if (lastInput > 0)
+				lastInput = log(lastInput);
 		}
 		else if (in == "ln") {
-			if (last > 0)
-				last = log(last) / log(M_E);
+			if (lastInput > 0)
+				lastInput = log(lastInput) / log(M_E);
 		}
 		break;
 
 	// Pi
 	case 'p':
 		if (in == "pi") {
-			if (static_cast<int>(stack.size()) > 0 || last != 0)
-				stack.push_back(last);
-			last = M_PI;
+			if (static_cast<int>(stack.size()) > 0 || lastInput != 0)
+				stack.push_back(lastInput);
+			lastInput = M_PI;
 		}
 		break;
 
 	// Euler's Number
 	case 'e':
-		if (static_cast<int>(stack.size()) > 0 || last != 0)
-			stack.push_back(last);
-		last = M_E;
+		if (static_cast<int>(stack.size()) > 0 || lastInput != 0)
+			stack.push_back(lastInput);
+		lastInput = M_E;
 		break;
 
 	// Delete last input
 	case '<':
 		if (static_cast<int>(stack.size()) > 0) {
-			last = stack.back();
+			lastInput = stack.back();
 			stack.pop_back();
 		}
-		else last = 0;
+		else lastInput = 0;
 		break;
 	
 	// Set window height
 	case 'w':
 		if (in.length() == 1)
-			currWindowHeight = resetWindowHeight;												// reset to default
+			currWindowHeight = resetWindowHeight;			// reset to default
 		else if (in.at(1) == '+' && currWindowHeight < 8)
 			currWindowHeight++;
 		else if (in.at(1) == '-' && currWindowHeight > 1)
@@ -128,26 +128,22 @@ bool Calculator::input(string in) {
 		return false;
 	
 	// Subtraction
-	case '-':																// fall through if input is a negative number
+	case '-':												// fall through if input is a negative number
 		if (in.size() == 1) {
 			if (static_cast<int>(stack.size()) > 0) {
-				last = stack.back() - last;
+				lastInput = stack.back() - lastInput;
 				stack.pop_back();
 			}
-			else last = 0 - last;
+			else lastInput = 0 - lastInput;
 			break;
 		}
 
 	default:
-		try {
-			double din = stod(in);											// throws exception if in is anything other than number
-			if (static_cast<int>(stack.size()) > 0 || last != 0)
-				stack.push_back(last);
-			last = din;
-		}
-		catch (invalid_argument& ia) {
-			cout << ia.what() << endl;
-		}
+		if (in.find_first_not_of("0123456789.-") != string::npos) break;
+		double din = stod(in);
+		if (static_cast<int>(stack.size()) > 0 || lastInput != 0)
+			stack.push_back(lastInput);
+		lastInput = din;
 		break;
 	}
 	return true;
@@ -161,25 +157,25 @@ int Calculator::factorial(int n) {
 }
 
 void Calculator::printScreen() {
-	if (last == 0) last = 0;												// prevent negative 0 display
+	if (lastInput == 0) lastInput = 0;						// prevent negative 0 display
 	system("CLS");
 	cout << "? for help\n";
 	cout << "--------------\n";
 
 	for (int i = 0; i < (currWindowHeight >= stack.size() ? currWindowHeight - stack.size() : 0); i++)
-		cout << '|' << endl;												// Print edge of display before numbers
+		cout << '|' << endl;								// Print edge of display before numbers
 
 	for (int i = static_cast<int>(stack.size()) >= currWindowHeight ? stack.size() - currWindowHeight : 0; i < static_cast<int>(stack.size()); i++) {
-		cout << "| ";														// Print edge of display with numbers
+		cout << "| ";										// Print edge of display with numbers
 		if (stack.at(i) == M_PI) cout << "pi\n";
 		else if (stack.at(i) == M_E) cout << "e\n";
 		else cout << stack.at(i) << endl;
 	}
 
 	cout << "|-------------\n| ";
-	if (last == M_PI) cout << "pi\n";
-	else if (last == M_E) cout << "e\n";
-	else cout << last << endl;
+	if (lastInput == M_PI) cout << "pi\n";
+	else if (lastInput == M_E) cout << "e\n";
+	else cout << lastInput << endl;
 	cout << "--------------\n";
 
 	cout << "> ";

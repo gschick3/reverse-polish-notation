@@ -8,13 +8,13 @@
 class Calculator
 {
 private:
-	int factorial(int);
+	std::vector<double> stack;
+	double lastInput;
 
 	int resetWindowHeight;
 	int currWindowHeight;
-	std::vector<double> stack;
-	double last;
 
+	int factorial(int);
 
 public:
 	Calculator();
